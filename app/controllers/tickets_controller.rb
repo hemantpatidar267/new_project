@@ -19,6 +19,21 @@ class TicketsController < ApplicationController
 	    render json: { error: 'Ticket not found' }, status: :not_found
   end
 
+
+  def destroy
+    if ticket = Ticket.find_by(id: params[:id])
+
+      if ticket.destroy
+        render json: { message: "ticket successfully deleted" }, status: :ok
+      else
+        render json: { error: "Failed to delete ticket" }, status: :unprocessable_entity
+      end
+    else
+      render json: {error: "please provide valid ticket id"},status: :unprocessable_entity
+    end  
+  end
+
+
   def index
     ticket = @current_user.tickets
     render json: ticket
@@ -57,7 +72,7 @@ class TicketsController < ApplicationController
   private
 
   def ticket_params
-    params.require(:ticket).permit(:screen_id,:movie_id ,:user_id,:alphanumeric_id)
+    params.require(:ticket).permit(:screen_id,:movie_id ,:user_id,:alphanumeric_id,:theatre_id)
   end
 
   def check_user

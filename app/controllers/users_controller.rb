@@ -17,14 +17,32 @@ class UsersController < ApplicationController
 
 
   def update
-    byebug
-    user = User.find_by(id:params[:id])
+    #byebug
+    if user = User.find_by(id:params[:id])
 
-    if user.update(user_params)
-      render json: user, status: :ok
+      if user.update(user_params)
+        render json: user, status: :ok
+      else
+        render json: user.errors, status: :unprocessable_entity
+      end
     else
-      render json: user.errors, status: :unprocessable_entity
-    end
+      render json: {error: "please provide valid user id"},status: :unprocessable_entity
+    end    
+  end
+
+
+
+  def destroy
+    if user = User.find_by(id: params[:id])
+
+      if user.destroy
+        render json: { message: "user successfully deleted" }, status: :ok
+      else
+        render json: { error: "Failed to delete user" }, status: :unprocessable_entity
+      end
+    else
+      render json: {error: "please provide valid user id"},status: :unprocessable_entity
+    end  
   end
 
   

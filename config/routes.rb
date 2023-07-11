@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
   post '/login', to: 'authentication#login'
-  resources :users, only: [:create, :show, :update]
+  resources :users, only: [:create, :show, :update, :destroy]
 
   resources :theatres, only: [:create, :show ,:update ,:destroy]
 
-  resources :screens, only: [:create, :show, :index, :update]
+  resources :screens, only: [:create, :show, :index, :update, :destroy]
 
-  resources :movies, only: [:create, :show ,:update]
+  resources :movies, only: [:create, :show ,:update, :destroy]
   
-  resources :tickets, only: [:create, :show,]
+  resources :tickets, only: [:create, :show, :destroy]
 
 
   get "/available_movie", to: 'movies#movie_time'

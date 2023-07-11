@@ -1,5 +1,5 @@
 class ScreensController < ApplicationController
-  before_action :check_user 
+  before_action :check_user, only: [:create, :update, :destroy]
 
   def create
     screen = Screen.new(screen_params)
@@ -19,13 +19,32 @@ class ScreensController < ApplicationController
 
   def update
     #byebug
-    screen = Screen.find_by(id:params[:id])
+    if screen = Screen.find_by(id:params[:id])
 
-    if screen.update(screen_params)
-      render json: screen, status: :ok
+      if screen.update(screen_params)
+        render json: screen, status: :ok
+      else
+        render json: screen.errors, status: :unprocessable_entity
+      end
     else
-      render json: screen.errors, status: :unprocessable_entity
-    end
+      render json: {error: "please provide valid screen id"},status: :unprocessable_entity
+    end  
+
+  end
+
+
+
+  def destroy
+    if screen = Screen.find_by(id: params[:id])
+
+      if screen.destroy
+        render json: { message: "screen successfully deleted" }, status: :ok
+      else
+        render json: { error: "Failed to delete screen" }, status: :unprocessable_entity
+      end
+    else
+      render json: {error: "please provide valid screen id"},status: :unprocessable_entity
+    end  
   end
 
 
@@ -58,7 +77,8 @@ class ScreensController < ApplicationController
   end
 
   def check_user
-    unless @current_user.user
+    # byebug
+    if !@current_user.user
       render json: {error: "not Allowed"}
     end
   end

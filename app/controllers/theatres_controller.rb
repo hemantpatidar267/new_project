@@ -1,5 +1,5 @@
 class TheatresController < ApplicationController
-  before_action :authorize_owner, only: [:create]
+  before_action :authorize_owner, only: [:create, :update, :destroy]
 
   def create
     theatre = @current_user.theatres.new(theatre_params)
@@ -19,25 +19,31 @@ class TheatresController < ApplicationController
 
 
   def update
-    byebug
-    theatre = Theatre.find_by(id: params[:id])
+    #byebug
+    if theatre = Theatre.find_by(id: params[:id])
 
-    if theatre.update(theatre_params)
-      render json: theatre, status: :ok
+      if theatre.update(theatre_params)
+        render json: theatre, status: :ok
+      else
+        render json: theatre.errors, status: :unprocessable_entity
+      end
     else
-      render json: theatre.errors, status: :unprocessable_entity
-    end
+      render json: {error: "please provide valid theatre id"},status: :unprocessable_entity
+    end  
   end
 
 
   def destroy
-    theatre = Theatre.find_by(id: params[:id])
+    if theatre = Theatre.find_by(id: params[:id])
 
-    if theatre.destroy
-      render json: { message: "Theatre successfully deleted" }, status: :ok
+      if theatre.destroy
+        render json: { message: "Theatre successfully deleted" }, status: :ok
+      else
+        render json: { error: "Failed to delete theatre" }, status: :unprocessable_entity
+      end
     else
-      render json: { error: "Failed to delete theatre" }, status: :unprocessable_entity
-    end
+      render json: {error: "please provide valid theatre id"},status: :unprocessable_entity
+    end  
   end
 
 

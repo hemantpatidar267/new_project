@@ -1,5 +1,5 @@
 class MoviesController < ApplicationController
-  before_action :authorize_owner ,only: [:create]
+  before_action :authorize_owner ,only: [:create, :update, :destroy]
 
   def create
     movie = @current_user.movies.new(movie_params)
@@ -26,6 +26,22 @@ class MoviesController < ApplicationController
     else
       render json: movie.errors, status: :unprocessable_entity
     end
+  end
+
+
+
+  def destroy
+
+    if movie = Movie.find_by(id: params[:id])
+
+      if movie.destroy
+        render json: { message: "movie successfully deleted" }, status: :ok
+      else
+        render json: { error: "Failed to delete movie" }, status: :unprocessable_entity
+      end
+    else
+      render json: {error: "please provide valid movie id"},status: :unprocessable_entity
+    end  
   end
 
 
