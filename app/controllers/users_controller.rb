@@ -1,7 +1,9 @@
-class UsersController < ApplicationController
+# frozen_string_literal: true
 
+class UsersController < ApplicationController
+  # Service to download ftp files from the
   def create
-    #byebug
+    #debugger
     user = User.new(user_params)
     if user.save
       render json: { user: user }, status: :created
@@ -11,60 +13,22 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = User.find_by(id:params[:id])
-    render json: { user: user }
+    user = User.find_by(id: params[:id])
+    render json: user
   end
-
 
   def update
-    #byebug
-    if user = User.find_by(id:params[:id])
-
-      if user.update(user_params)
-        render json: user, status: :ok
-      else
-        render json: user.errors, status: :unprocessable_entity
-      end
+    user = User.find_by(id: params[:id])
+    if user.update(user_params)
+      render json: user, status: :ok
     else
-      render json: {error: "please provide valid user id"},status: :unprocessable_entity
-    end    
+      render json: user.errors, status: :unprocessable_entity
+    end
   end
 
-
-
-  def destroy
-    if user = User.find_by(id: params[:id])
-
-      if user.destroy
-        render json: { message: "user successfully deleted" }, status: :ok
-      else
-        render json: { error: "Failed to delete user" }, status: :unprocessable_entity
-      end
-    else
-      render json: {error: "please provide valid user id"},status: :unprocessable_entity
-    end  
-  end
-
-  
   private
 
   def user_params
     params.require(:user).permit(:name, :email, :password, :user, :role)
   end
 end
-
-
-# List all Theaters
-# before_action :authorize_owner
-# theaters = @current_user.theaters
-# result = []
-# theaters.each do |t|
-#   h = Hash.new
-#    h[:title] = t.name
-# .
-# .
-# .
-#    result.push(h)
-#  end
-
-#    render json: result

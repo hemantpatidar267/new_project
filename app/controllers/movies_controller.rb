@@ -2,18 +2,27 @@ class MoviesController < ApplicationController
   before_action :authorize_owner ,only: [:create, :update, :destroy]
 
   def create
+    #byebug
     movie = @current_user.movies.new(movie_params)
 
     if movie.save
-      render json: {movie: movie}, status: :created
+      render json: movie , status: :created
     else
-      render json: {error: movie.errors}, status: :unprocessable_entity
+      render json: movie.errors, status: :unprocessable_entity
     end
   end
 
   def show
+    #byebugs
     movie = Movie.find_by(id:params[:id])
-    render json: { movie: movie }
+    render json:  movie
+  end
+
+  def search_theatre_by_movie
+    # byebug
+    movie = Movie.find_by(id:params[:movie_id])
+    theatres = movie.theatres
+    render json: theatres
   end
 
 
@@ -68,16 +77,12 @@ class MoviesController < ApplicationController
   private
 
   def movie_params
-    params.require(:movie).permit(:screen_id,:name ,:start_date,:end_date)
+    params.require(:movie).permit(:name, :start_date, :end_date)
   end
 
 
 
   def authorize_owner
-    # Add your authorization logic here, e.g., checking if the current user is an owner
-    # You can access the current user using the JWT token
-
-    # Assuming you have a method to decode the JWT token and retrieve the user information
     user =  User.find_by(id: @current_user.id)
     if user
       if user.user

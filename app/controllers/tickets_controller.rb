@@ -19,21 +19,6 @@ class TicketsController < ApplicationController
 	    render json: { error: 'Ticket not found' }, status: :not_found
   end
 
-
-  def destroy
-    if ticket = Ticket.find_by(id: params[:id])
-
-      if ticket.destroy
-        render json: { message: "ticket successfully deleted" }, status: :ok
-      else
-        render json: { error: "Failed to delete ticket" }, status: :unprocessable_entity
-      end
-    else
-      render json: {error: "please provide valid ticket id"},status: :unprocessable_entity
-    end  
-  end
-
-
   def index
     ticket = @current_user.tickets
     render json: ticket
@@ -43,7 +28,7 @@ class TicketsController < ApplicationController
   	# debugger
     number_of_tickets = params[:number_of_tickets].to_i
     @tickets = []
-    screen = Screen.find_by(id:params[:screen_id])
+    screen = Screen.find_by(movie_id:params[:movie_id], theatre_id:params[:theatre_id])
     if screen.seating_capacity < number_of_tickets
     	render json: { error: "screen do not have space for ticket" }, status: :unprocessable_entity
     end
@@ -52,7 +37,7 @@ class TicketsController < ApplicationController
       	movie_id: params[:movie_id],
         user_id: @current_user.id,
         theatre_id: params[:theatre_id],
-        screen_id: params[:screen_id],
+        screen_id: screen.id,
         alphanumeric_id:generate_alphanumeric_id)
 
       if ticket_details.save

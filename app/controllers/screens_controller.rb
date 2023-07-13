@@ -3,7 +3,8 @@ class ScreensController < ApplicationController
 
   def create
     screen = Screen.new(screen_params)
-    # byebug
+    Showtime.create(show_params)
+
     if screen.save
       render json: screen, status: :created
     else
@@ -12,68 +13,52 @@ class ScreensController < ApplicationController
   end
 
   def show
-    screen= Screen.find_by(id:params[:id])
-    render json: { screen: screen }
+    screen= Screen.find_by(id: params[:id])
+    render json: screen
   end
 
-
   def update
-    #byebug
-    if screen = Screen.find_by(id:params[:id])
-
+    if screen = Screen.find_by(id: params[:id])
+      show = Showtime.find_by(movie_id: screen.movie_id, theatre_id: screen.theatre_id)
       if screen.update(screen_params)
+        show.movie_id = screen.movie_id
+        show.save
         render json: screen, status: :ok
       else
         render json: screen.errors, status: :unprocessable_entity
       end
     else
-      render json: {error: "please provide valid screen id"},status: :unprocessable_entity
+      render json: { error: 'please provide valid screen id' },status: :unprocessable_entity
     end  
 
   end
-
-
-
+  
   def destroy
     if screen = Screen.find_by(id: params[:id])
 
       if screen.destroy
-        render json: { message: "screen successfully deleted" }, status: :ok
+        render json: { message: 'screen successfully deleted' }, status: :ok
       else
-        render json: { error: "Failed to delete screen" }, status: :unprocessable_entity
+        render json: { error: 'Failed to delete screen' }, status: :unprocessable_entity
       end
     else
-      render json: {error: "please provide valid screen id"},status: :unprocessable_entity
+      render json: {error: 'please provide valid screen id' },status: :unprocessable_entity
     end  
   end
-
-
-
+  
   def index
-    # byebug
     theatre = Theatre.find_by(id: params[:id])
-    if theatre
-      screens = theatre.screens
-      result = []
-      i=1;
-      screens.each do |t|
-        h = Hash.new
-        h[:s_No] = i
-        h[:seating_capacity] = t.seating_capacity
-        result.push(h)
-        i+=1
-      end
-        render json: result
-    else
-      render json: {error: "you search a wrong theatre"}
-    end
-
+    screens = theatre.screens
+    render json: screens
   end
 
   private
 
   def screen_params
-    params.require(:screen).permit(:theatre_id, :seating_capacity)
+    params.require(:screen).permit(:theatre_id, :seating_capacity, :movie_id)
+  end
+  def show_params
+    params.require(:screen).permit(:theatre_id, :movie_id)
   end
 
   def check_user
