@@ -6,7 +6,7 @@ class Theatre < ApplicationRecord
   has_many :showtimes
   has_many :movies, through: :showtimes
 
-  # has_one_attacted :image
+  has_one_attached :image
   
   validates :name , presence: true
   validates :address , presence: true
