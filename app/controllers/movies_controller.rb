@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # managing movie
-class MoviesController < ApplicationController
+class MoviesController < ApiController
   before_action :check_user, only: %i[create update destroy]
-  before_action :set_movie, only: [:show, :update, :destroy]
+  before_action :set_movie, only: [:show, :update]
   # Service to download ftp files from the
   def create
     movie = @current_user.movies.new(movie_params)
@@ -39,8 +39,12 @@ class MoviesController < ApplicationController
 
   def index
     query = params[:query]
-    movies = Movie.where('name LIKE ?', "%#{query}%") if query.present?
-    render json: movies || { error: 'movie not found ' }
+    movies = Movie.where('name LIKE ?', "%#{query}%") 
+    if movies.present?
+      render json: movies 
+    else
+      render json: { error: 'movie not found ' }
+    end 
   end
 
   private

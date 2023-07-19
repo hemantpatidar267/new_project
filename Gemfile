@@ -50,3 +50,10 @@ end
 gem "jwt"
 gem 'active_model_serializers'
 gem 'rubocop-rails', require: false
+gem "sprockets", "~> 4.2"
+
+gem "activeadmin", "~> 3.0"
+
+gem "devise", "~> 4.9"
+
+gem "sass-rails", "~> 6.0"

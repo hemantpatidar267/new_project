@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # managing screen
-class ScreensController < ApplicationController
+class ScreensController < ApiController
   before_action :check_user, only: %i[create update destroy]
   before_action :set_screen, only: [:show, :update, :destroy]
   # Service to download ftp files from the

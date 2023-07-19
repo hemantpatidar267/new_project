@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
   post '/login', to: 'authentication#login'
-  resources :users, only: [:create, :show, :update, :index]
+
+  resource :users
 
   resources :theatres, only: [:create, :show, :update, :index]
 
@@ -13,6 +16,6 @@ Rails.application.routes.draw do
 
   get "/available_movie", to: 'movies#movie_time'
 
-  get '/search_theatre_by_movie', to: 'movies#search_theatre_by_movie'
+  get '/search_theatre_by_movie', to: 'theatres#search_theatre_by_movie'
 
 end

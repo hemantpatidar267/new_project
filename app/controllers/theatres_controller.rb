@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 # managing theatre
-class TheatresController < ApplicationController
-  before_action :check_user, only: [:create, :update, :destroy]
-  before_action :set_theatre, only: [:show, :update]
+class TheatresController < ApiController
+  before_action :check_user, only: [:create, :update]
   # Service to download ftp files from the
   def create
     theatre = @current_user.theatres.new(theatre_params)
@@ -15,14 +14,30 @@ class TheatresController < ApplicationController
   end
 
   def show
-    render json:  @theatre, status: :ok
+    theatre = Theatre.find_by(id: params[:id])
+    if theatre.present?
+      render json: theatre, status: :ok
+    else
+       render json: { message: 'theatre not found' }
+    end
   end
 
   def update
-    if @theatre.update(theatre_params)
-      render json: @theatre, status: :ok
+    theatre = @current_user.theatres.find_by(id: params[:id])
+    if theatre.update(theatre_params)
+      render json: theatre, status: :ok
+    end
+    rescue NoMethodError
+        render json: {message:"thester not found"}
+  end
+
+  def search_theatre_by_movie
+    movie = Movie.find_by(id: params[:movie_id])
+    if movie.present?
+      theatres = movie.theatres
+      render json: theatres
     else
-      render json: @theatre.errors, status: :unprocessable_entity
+      render json: { message: 'movie not found' }
     end
   end
 
@@ -35,11 +50,6 @@ class TheatresController < ApplicationController
 
   def theatre_params
     params.permit(:name, :address, :image)
-  end
-
-  def set_theatre
-    @theatre = Theatre.find_by(id: params[:id])
-    render json: { message: 'theatre not found' }, status: :not_found unless @theatre
   end
 
   def check_user
