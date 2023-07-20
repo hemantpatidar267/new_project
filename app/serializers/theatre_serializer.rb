@@ -1,5 +1,5 @@
 class TheatreSerializer < ActiveModel::Serializer
-  attributes :id, :name, :address, :user_id, :image
+  attributes :id, :name, :address, :image
 
   def image
     object.image.url

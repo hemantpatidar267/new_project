@@ -29,11 +29,6 @@ class UsersController < ApiController
 
   private
 
-  # def set_user
-  #   @user = User.find_by(id: params[:id])
-  #   render json: { message: 'user not found' }, status: :not_found unless @user
-  # end
-
   def user_params
     params.permit(:name, :email, :password, :user, :role)
   end

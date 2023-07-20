@@ -85,15 +85,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_080141) do
     t.index ["theatre_id"], name: "index_screens_on_theatre_id"
   end
 
-  create_table "showtimes", force: :cascade do |t|
-    t.integer "movie_id", null: false
-    t.integer "theatre_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["movie_id"], name: "index_showtimes_on_movie_id"
-    t.index ["theatre_id"], name: "index_showtimes_on_theatre_id"
-  end
-
   create_table "theatres", force: :cascade do |t|
     t.string "name"
     t.string "address"
@@ -131,8 +122,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_080141) do
   add_foreign_key "movies", "users"
   add_foreign_key "screens", "movies"
   add_foreign_key "screens", "theatres"
-  add_foreign_key "showtimes", "movies"
-  add_foreign_key "showtimes", "theatres"
   add_foreign_key "theatres", "users"
   add_foreign_key "tickets", "movies"
   add_foreign_key "tickets", "theatres"

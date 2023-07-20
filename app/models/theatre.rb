@@ -1,11 +1,10 @@
 class Theatre < ApplicationRecord
   belongs_to :user
-  belongs_to :screen
   has_many :screens
   has_many :tickets
-  has_many :movies
-  has_many :showtimes
-  has_many :movies, through: :showtimes
+  has_many :movies ,through: :screens
+  # has_many :showtimes
+  # has_many :movies, through: :showtimes
 
   has_one_attached :image
   

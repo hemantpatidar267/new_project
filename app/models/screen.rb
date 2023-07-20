@@ -1,9 +1,9 @@
 class Screen < ApplicationRecord
   belongs_to :theatre
-  has_one :movie
+  # has_one :movie
   belongs_to :movie
-  has_many :theatres
-  has_many :users, through: :theatres
+  # has_many :theatres
+  # has_many :users, through: :theatres
   # has_many :tickets, dependent: :destroy
   
 

@@ -18,12 +18,6 @@ class MoviesController < ApiController
     render json: @movie
   end
 
-  def search_theatre_by_movie
-    movie = Movie.find_by(id: params[:movie_id])
-    theatres = movie.theatres
-    render json: theatres
-  end
-
   def update
     if @movie.update(movie_params)
       render json: @movie, status: :ok
@@ -50,7 +44,7 @@ class MoviesController < ApiController
   private
 
   def movie_params
-    params.require(:movie).permit(:name, :start_date, :end_date)
+    params.permit(:name, :start_date, :end_date)
   end
 
   def set_movie

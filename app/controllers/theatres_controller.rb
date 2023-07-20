@@ -14,7 +14,7 @@ class TheatresController < ApiController
   end
 
   def show
-    theatre = Theatre.find_by(id: params[:id])
+    theatre =  Theatre.find_by(id: params[:id])
     if theatre.present?
       render json: theatre, status: :ok
     else
@@ -25,17 +25,21 @@ class TheatresController < ApiController
   def update
     theatre = @current_user.theatres.find_by(id: params[:id])
     if theatre.update(theatre_params)
-      render json: theatre, status: :ok
+      render json: theatre , status: :ok
     end
     rescue NoMethodError
-        render json: {message:"thester not found"}
+        render json: { message: 'theatre not found' }
   end
 
   def search_theatre_by_movie
     movie = Movie.find_by(id: params[:movie_id])
     if movie.present?
       theatres = movie.theatres
-      render json: theatres
+      if theatres.empty?
+        render json: { message: 'theatre not found'},status: 400
+      else
+        render json: theatres
+      end
     else
       render json: { message: 'movie not found' }
     end

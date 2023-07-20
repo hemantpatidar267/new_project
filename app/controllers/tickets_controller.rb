@@ -5,20 +5,26 @@ class TicketsController < ApiController
   before_action :check_user
   # Service to download ftp files from the
   def create
-    #byebug
     number_of_tickets = params[:number_of_tickets].to_i
     tickets = []
-    screen = Screen.find_by(movie_id: params[:movie_id], theatre_id: params[:theatre_id])
-    if screen.seating_capacity < number_of_tickets
-      return render json: { error: 'screen do not have space for ticket' }, status: :unprocessable_entity
-    end
-    ticket_details = @current_user.tickets.new(ticket_params)
-    if ticket_details.save
-      tickets << ticket_details
-      screen.update(seating_capacity: screen.seating_capacity - number_of_tickets)
-      render json: tickets, status: :created
+    theatre = Theatre.find_by_id(params[:theatre_id])
+    movie = Movie.find_by_id(params[:movie_id])
+    if theatre.nil? || movie.nil?
+      render json: {message: 'please give a valid movie or theatre'}
     else
-      render json: { error: ticket_details.errors.full_messages }, status: :unprocessable_entity
+
+      screen = Screen.find_by(movie_id: params[:movie_id], theatre_id: params[:theatre_id])
+      if screen.seating_capacity < number_of_tickets
+        return render json: { error: 'screen do not have space for ticket' }, status: :unprocessable_entity
+      end
+      ticket_details = @current_user.tickets.new(ticket_params)
+      if ticket_details.save
+        tickets << ticket_details
+        screen.update(seating_capacity: screen.seating_capacity - number_of_tickets)
+        render json: tickets, status: :created
+      else
+        render json: { error: ticket_details.errors.full_messages }, status: :unprocessable_entity
+      end
     end
   end
   
