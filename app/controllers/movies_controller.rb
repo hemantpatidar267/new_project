@@ -44,7 +44,7 @@ class MoviesController < ApiController
   private
 
   def movie_params
-    params.permit(:name, :start_date, :end_date)
+    params.require(:movie).permit(:name, :start_date, :end_date)
   end
 
   def set_movie
